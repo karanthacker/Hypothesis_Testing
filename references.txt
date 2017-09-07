@@ -1,0 +1,4 @@
+http://www.graphpad.com/quickcalcs/	
+https://en.wikipedia.org/wiki/Stroop_effect
+http://support.minitab.com/en-us/minitab/17/topic-library/basic-statistics-and-graphs/hypothesis-tests/tests-of-means/why-use-paired-t/
+https://stackoverflow.com/questions/6957549/overlaying-histograms-with-ggplot2-in-r
