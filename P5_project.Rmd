@@ -1,0 +1,161 @@
+---
+title: "Stroop Effect"
+author: "Karan Thacker"
+date: "4 September 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+#Qustion 1
+##Identify variables in the experiment 
+Dependent variable is the time taken to recite the font colors of each word.
+
+Independent variable is the condition applied on the observer , whether it is 
+same font color and word meaning or the word meaning some different color from the 
+font color.
+
+#Question 2
+##  What is an appropriate set of hypotheses for this task? What kind of statistical test do you expect to perform? Justify your choices. 
+We want to check whether the difference between the mean of test timing for congruent
+and incongruent population is statistically different or not.
+
+Out of z test and t test, we would chose to apply a t test as the z test is used for a population 
+with mean and standard devition of population given. Also to scale the difference between two different 
+population , the z test is not applicable.
+
+The sample distribution is void of outliers and normally distributed so it is okay to use 
+test on it.
+
+So this is going to be a  t test where first an observer has to go through same color font
+same word meaning test and then differnet color and word meaning test and note the timing as
+one observation in each sample.
+
+**null hypothesis** states that there won't be any significant change in the mean of 
+test timing of congruent and incongruent test takers.
+
+**alternative** states that there will be significant change in the mean of test timming 
+of  congruent and incongruent test takers.
+
+(null hypothesis)$$ H_0 : \mu_c - \mu_i = 0 $$ (alternative hypothesis)
+$$ H_a : \mu_c - \mu_i \neq 0$$ 
+
+the t test wil be **paired sample t test** with critical region lying below p = 0.05.
+
+The reason for paired t test is that the two conditions are being applied on the same sample 
+set making it a dependent sample where each person takes the test of reciting by both methods 
+and his/her observation gets recorded in both sets.
+
+p =0.05 is taken as it is pretty much standard for the unlikely occurence.
+
+Also the test will be **2 tailed** as the alternative hypothesis can go either 
+way with mean population of one condition will come out to be greater than the other.
+
+# Question 3 
+##Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.
+
+```{r echo=FALSE, message =FALSE, warning =FALSE}
+sd = read.csv('stroopdata.csv')
+summary(sd)
+```
+
+above is the output of an r code cell which read the data from the csv file and 
+made a dataframe out of it and ran the function summary on it to calculate **mean,
+median, and the interquartile values of both congruent and incongruent samples.
+
+| Stats|congruent|incongruent|
+|------|--------:|----------:|
+|Mean  |   14.05 |    22.02  |   
+|Median|   14.36 |    21.02  |   
+|Std dv|    3.56 |     4.80  |
+|IQR   |    4.30 |     5.33  |      
+
+The first two statistical terms are Mean and median for describing the central tendency.
+
+The second two terms are Standard deviation and Interquartile range for showing variability. 
+
+All these values have been calculated by R functions summary(), std() and IQR()
+
+#Question 4
+##Report some descriptive statistics regarding this dataset. Include at least one measure of central tendency and at least one measure of variability.
+```{r echo=FALSE, message =FALSE, warning =FALSE}
+library(ggplot2)
+sd$num = c(1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24)
+sd$dif = sd$Incongruent - sd$Congruent
+ggplot(aes(x = sample_readings),data = sd) + 
+  geom_point(aes(x = num,y=sd$Congruent),color = 'Blue') +
+  geom_point(aes(x = num,y=sd$Incongruent),color = 'Red') +
+  geom_point(aes(x = num,y=sd$dif),color = 'Black',linetype = 2) +
+  scale_x_continuous(breaks = seq(1,24,1))+
+  scale_y_continuous(breaks = seq(0,35,5)) +
+  ylab('time in seconds')+
+  ggtitle('Scatter plot for sample values')
+```
+
+Above is a line graph of sample timings showing the readings for each observaton for both
+sample types. The blue poinst marks for congruent sample, the red points marks for the incongruent
+sample and the black points is the difference between them. 
+
+Clearly we can see that for all the sample readings the incongruent sample values are higher than
+the the other and at one point of time it is more than double as we that the black point is above 
+the blue at 20th observation.
+
+```{r echo=FALSE, message =FALSE, warning =FALSE}
+library(gridExtra)
+x = ggplot(aes(x = "", y = time(seconds)), data = sd) + 
+  geom_boxplot(aes(y = sd$Congruent)) + xlab('Congruent')+
+ ggtitle('Box Plot for Congruent sample')
+y = ggplot(aes(x = "", y = time(seconds)), data = sd) + 
+  geom_boxplot(aes(y = sd$Incongruent))+ 
+ ggtitle('Box Plot for Incongruent sample') + xlab('Incongruent')
+grid.arrange(x,y, ncol =2)
+
+
+
+```
+
+We can compare the range of values, median and all the quartile values between the two samples 
+from their boxplots.
+
+#Question 5
+## What is your confidence level and your critical statistic value? Do you reject the null hypothesis or fail to reject it? Come to a conclusion in terms of the experiment task. Did the results match up with your expectations?
+ 
+ Test is two tailed paired t test for p = 0.05 therefore
+ 
+ - t critical (t*) = 2.069 for df = 23
+ - SD of the differences = 4.86
+ - SEM = 0.99
+ - t value =  -8.03
+ 
+ So the t value falls way into the left tail critical region making us **reject the null hypothesis**
+ 
+ Therefore we conclude that mean of congruent population is significantly lesse than the the incongruent.
+ Thus establishing the existence of stroop effect.
+ 
+ The 95 per cent confidence interval lies between -10.02(LL) to -5.92(UL). This means that on an average 
+ the mean time taken by the congruent recitation will be 10.02 to 5.92 lesser than the incongruent.
+ 
+ The p value for t = -8.03 taken from graphpad website is lesser than **0.0001**
+ Also cohen's D = -1.64
+ 
+ (* all calculations except t values were rounded to 2 decimal places )
+ 
+#Question 6
+## What do you think is responsible for the effects observed? Can you think of an alternative or similar task that would result in a similar effect? Some research about the problem will be helpful for thinking about these two questions!
+
+The reson behind the slow reciting is that our brain is confused by two simultaneously coming signals , one is 
+trying to interpret the font color and the other is trying to interpret the meaning of word which gets our brain
+slow to give the desired answer. In simple words the focus of mind is shaken.
+
+Also the other fact which adds on the weight to the dilemma is that our reading processing power is faster.
+Two recite an incongurent color words is easy for a child who is not yet developed in reading skills. The words
+have no meaning for the kid.
+
+Other test like these can be randoms names or objects with color but these wont be that prominent.
+One other thing is emotional stroop effect where the words are negative such as grief, remorse.etc
+A depressed person will take more time to recite this test than a normal person.
+
+####Thank you
+
